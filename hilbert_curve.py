@@ -15,9 +15,6 @@ def hilbertCurve(order):
             curve = np.concatenate((top,bot))
     return(curve)
 
-#def hilbertCurve(x, y):
- #   return
-
 if __name__ == '__main__':
     import sys
     try:

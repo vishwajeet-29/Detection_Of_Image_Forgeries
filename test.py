@@ -9,7 +9,7 @@ import os
 import h5py
 import math
 
-from hilbert import hilbertCurve
+from hilbert_curve import hilbertCurve
 import skimage.io as io
 from matplotlib import pyplot as plt
 import scipy.misc 
@@ -21,9 +21,7 @@ training_iters = 50000000
 batch_size=16
 display_step = 10
 nb_nontamp_img=1 
-#16960
 nb_tamp_img=15 
-#68355
 nbFilter=32
 
 
@@ -44,13 +42,12 @@ y= tf.placeholder("float", [2,None, imSize,imSize])
 freqFeat=tf.placeholder("float", [None, 64,240])
 ratio=15.0
 
-############################################################################
 units_between_stride = 2
 upsample_factor=16
 n_classes=2
 beta=.01
 outSize=16
-############################################################################
+
 seq = np.linspace(0,63,64).astype(int)
 order3 = hilbertCurve(3)
 order3 = np.reshape(order3,(64))
@@ -63,9 +60,6 @@ weights = {
 biases = {
     'out': tf.Variable(tf.random_normal([nbFilter]))
 }
-
-
-
 
 with tf.device('/gpu:1'):
 
@@ -82,8 +76,7 @@ with tf.device('/gpu:1'):
         bit_mask_background = np.float32(background_labels_tensor)
         combined_mask=[]
         combined_mask.append(bit_mask_background)
-        combined_mask.append(bit_mask_class)
-        combined_mask = tf.concat(concat_dim=3, values=[bit_mask_background,bit_mask_class])		
+        combined_mask.append(bit_mask_class)		
         return combined_mask#flat_labels
 
     def get_kernel_size(factor):
@@ -240,7 +233,7 @@ config.gpu_options.allow_growth=True
 
 with tf.Session(config=config) as sess:
     sess.run(init) 
-    saver.restore(sess,'./model/final_model_nist.ckpt')	
+    saver.restore(sess,'./model/final_model.ckpt')	
     print('session starting .................!!!!')
     subtract_mean=True
 

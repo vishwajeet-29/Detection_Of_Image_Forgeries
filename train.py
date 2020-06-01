@@ -4,11 +4,11 @@ from tensorflow.python.client import device_lib
 from tensorflow.contrib import rnn
 import numpy as np
 import tensorflow.contrib.slim as slim
-from compute_mcc import *
+from mcc_calculation import *
 import os
 import math
 import h5py
-from hilbert import hilbertCurve
+from hilbert_curve import hilbertCurve
 os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
 log_device_placement = True
 
@@ -20,8 +20,6 @@ display_step = 10
 nb_nontamp_img=0
 nb_tamp_img=16
 nbFilter=32
-
-
 
 n_input = 240
 n_steps = 64 
@@ -52,9 +50,6 @@ weights = {
 biases = {
     'out': tf.Variable(tf.random_normal([nbFilter]))
 }
-
-
-
 
 with tf.device('/gpu:1'):
 
@@ -202,7 +197,7 @@ config.gpu_options.allow_growth=True
 
 with tf.Session(config=config) as sess:
     sess.run(init) 
-    saver.restore(sess,'model/final_model_nist.ckpt')
+    saver.restore(sess,'model/final_model.ckpt')
     print('session starting .................!!!!' )
 
     feat1=h5py.File('train_data/train_data_feat.hdf5','r')
@@ -302,14 +297,11 @@ with tf.Session(config=config) as sess:
            
             if prec > best_acc :
                 best_prec = prec
-                save_path=saver.save(sess,'model/final_model_nist.ckpt')
-                #print("Best Model Found on NC16...")
-            
-            #print("prec = "+str(prec)+"("+str(best_prec)+")" + ", acc = "+ str(test_accuracy))
+                save_path=saver.save(sess,'model/final_model.ckpt')
             
         step += 1
 
         if step % 500 ==0: 
-            save_path=saver.save(sess,'model/final_model_nist.ckpt')
-            print('model saved ..........#epoch->'+str(epoch_iter))
-    #print("Optimization Finished!")
+            save_path=saver.save(sess,'model/final_model.ckpt')
+            print('model saved .......epoch->'+str(epoch_iter))
+   
